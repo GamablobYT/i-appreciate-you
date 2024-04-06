@@ -6,7 +6,7 @@ function playAudio(filePath) {
 
 function checkText(inputText) {
     //const targetString = "orngchimkin";
-    const targetString = ["gamablobyt", "orngchimkin"];
+    const targetString = ["gamablobyt", "orngchimkin", "_harshitgupta1", "_srai_7", "sparsh_agrawal12", "sonalchaudhary_", "squirtlesquad_", "satyeahhhh", "devanshu_pb22", "divyamx7", "raghavbansal161", "karan__chhabra_", "akshavya.agwl", "aryan.gupta_30", "vaibhav.3627", "arshiyasethi__", "_ajayynagpal"];
     if (targetString.includes(inputText)) {
         return true;
     }
