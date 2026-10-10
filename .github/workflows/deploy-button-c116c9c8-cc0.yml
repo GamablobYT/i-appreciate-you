@@ -1,0 +1,64 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment
+        required: true
+        default: production
+      commit_sha:
+        description: Immutable commit verified by Deploy Button
+        required: true
+      deployment_id:
+        description: Stable Deploy Button request identity
+        required: true
+
+run-name: Deploy Button ${{ inputs.deployment_id }}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit_sha }}
+          persist-credentials: false
+      - name: Confirm supported deployment environment
+        env:
+          DEPLOY_BUTTON_ENVIRONMENT: ${{ inputs.environment }}
+        run: test "$DEPLOY_BUTTON_ENVIRONMENT" = production
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+    env:
+      DEPLOY_BUTTON_BUILD_SPEC: b48966e27ab48e6cfb0579d25de0825d38028a176637439176b28ae425d27d39
+    defaults:
+      run:
+        working-directory: .
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy immutable build to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
