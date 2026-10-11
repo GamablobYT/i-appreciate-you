@@ -48,10 +48,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const frequency = 0.5; // Frequency of the sine wave
             const yPosition = amplitude * Math.sin(frequency * runtime * Math.PI / 1000) + window.innerHeight / 2;
     
+            // Special animation effect for gamablobyt
+            let extraTransform = '';
+            if (inputText.toLowerCase() === "gamablobyt") {
+                const pulse = 1 + 0.3 * Math.sin(runtime * Math.PI / 250);
+                const rotation = (runtime / 1000) * 360;
+                extraTransform = ` rotate(${rotation}deg) scale(${pulse})`;
+            }
+
             // Update image properties
             heartImage.style.top = `${yPosition}px`;
             heartImage.style.opacity = progress < 0.5 ? progress * 2 : 1 - (progress - 0.5) * 2;
-            heartImage.style.transform = `translate(-50%, -50%) scale(${progress})`; // Scale up as it fades in
+            heartImage.style.transform = `translate(-50%, -50%) scale(${progress})${extraTransform}`; // Scale up as it fades in
     
             if (runtime < 4000) { // Continue the animation for 4 seconds
                 requestAnimationFrame(animate);
@@ -60,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 finished = true;
                 heartImage.style.top = '50%'; // Reset image position
                 heartImage.style.left = '50%';
-                heartImage.style.transform = 'translate(-50%, -50%) scale (0)'; // Reset image scale
+                heartImage.style.transform = 'translate(-50%, -50%) scale(0)'; // Reset image scale
                 heartImage.style.opacity = 0; // Reset image opacity
                 heartImage.style.display = 'none'; // Hide the image
             }
